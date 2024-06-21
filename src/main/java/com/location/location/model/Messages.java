@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class Messages {
 	
-	 private String message;
+	 	private String message;
 	    private long user_id;
 	    private long rental_id;
 
