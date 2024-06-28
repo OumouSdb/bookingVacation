@@ -1,4 +1,4 @@
-package com.location.location.model;
+package com.location.location.DTO;
 
 import java.util.Date;
 import jakarta.persistence.Entity;
@@ -7,11 +7,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity
-public class Users {
+
+public class UsersDto {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	 private long id;
 	  private String name;
 	   private String email;
@@ -23,7 +22,7 @@ public class Users {
 	    	USER, ADMIN
 	    }
 	    
-	    @Enumerated
+	
 	    private Role role;
 	    
 		public long getId() {

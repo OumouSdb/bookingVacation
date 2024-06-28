@@ -63,6 +63,24 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>org.mariadb.jdbc</groupId>
+    <artifactId>mariadb-java-client</artifactId>
+</dependency>
+
+<!-- Dépendance pour OAuth2 JWT -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-oauth2-jose</artifactId>
+    <version>6.2.5</version> <!-- Vérifiez la dernière version compatible -->
+</dependency>
+<dependency>
+    <groupId>org.modelmapper</groupId>
+    <artifactId>modelmapper</artifactId>
+    <version>3.2.0</version>
+</dependency>
+		
 	</dependencies>
 
 	<build>
