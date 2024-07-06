@@ -1,15 +1,9 @@
-package com.location.location.model;
+package com.location.location.DTO;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
-@Entity
-public class Messages {
+public class MessagesDto {
 		
-		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 		private long Id;
 	 	private String message;
 	    private long user_id;
