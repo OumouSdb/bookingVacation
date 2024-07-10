@@ -26,7 +26,7 @@ public class RentalsController {
 	@Autowired
 	RentalsService rentalsService;
 	
-	@PostMapping("/save")
+	@PostMapping("")
 	public ResponseEntity<RentalsDto> saveRental(@RequestBody RentalsDto r) {
 		
 		RentalsDto rt = this.rentalsService.save(r);
@@ -34,7 +34,7 @@ public class RentalsController {
 		
 	}
 	
-	@PutMapping("/update/{id}")
+	@PutMapping("/{id}")
 	public RentalsDto updateRental(@PathVariable("id") final Long id, @RequestBody RentalsDto r) {
 		Optional<RentalsDto> rent = rentalsService.getrentById(id);
 		if(rent.isPresent()) {
@@ -46,7 +46,7 @@ public class RentalsController {
 		}
 	}
 	
-	@GetMapping("/")
+	@GetMapping("")
 	public Iterable<RentalsDto> getRentals() {
 		return this.rentalsService.getAllRentals();
 	}
@@ -56,7 +56,7 @@ public class RentalsController {
 		return this.rentalsService.getrentById(id);
 	}
 	
-	@DeleteMapping(value="/rentals/{id}")
+	@DeleteMapping(value="/{id}")
 	public ResponseEntity<Long> deleteById(@PathVariable("id") Long id) {
 		this.rentalsService.deleterentById(id);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);

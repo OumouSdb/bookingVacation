@@ -23,20 +23,14 @@ import com.location.location.service.UsersService;
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UsersController {
 	
 	@Autowired
 	UsersService usersService;
 	
-	@PostMapping("/save")
-	public UsersDto saveUser(@RequestBody UsersDto u) {
-		
-		return this.usersService.save(u);
-		
-	}
-	
-	@PutMapping("/update/{id}")
+
+	@PutMapping("/{id}")
 	public UsersDto updateUser(@PathVariable("id") final Long id, @RequestBody UsersDto u) {
 		Optional<UsersDto> user = usersService.getUserById(id);
 		if(user.isPresent()) {
@@ -48,7 +42,7 @@ public class UsersController {
 		}
 	}
 	
-	@GetMapping("/")
+	@GetMapping("")
 	public Iterable<UsersDto> getUsers() {
 		return this.usersService.getAllUsers();
 	}
@@ -58,7 +52,7 @@ public class UsersController {
 		return this.usersService.getUserById(id);
 	}
 	
-	@DeleteMapping(value="/users/{id}")
+	@DeleteMapping(value="/{id}")
 	public ResponseEntity<Long> deleteById(@PathVariable("id") long id) {
 		this.usersService.deleteUserById(id);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);
