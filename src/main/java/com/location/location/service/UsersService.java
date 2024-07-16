@@ -77,4 +77,8 @@ public class UsersService {
 	    }
 
 	}
+	
+	 public UsersDto getCurrentUser(Users user) {
+	        return new UsersDto(user.getId(), user.getName(), user.getEmail(), user.getCreated_at(), user.getUpdated_at());
+	    }
 }

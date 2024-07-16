@@ -1,14 +1,17 @@
 package com.location.location.model;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 
 
 @Entity
+@AllArgsConstructor
 public class Rentals {
 	
 	@Id
@@ -17,7 +20,7 @@ public class Rentals {
 	 private String name;
      private int surface;
      private int price;
-     private String picture;
+    private String picture;
      private String description;
      private long owner_id;
      private Date created_at;
@@ -46,12 +49,12 @@ public class Rentals {
 	public void setPrice(int price) {
 		this.price = price;
 	}
-	public String getPicture() {
-		return picture;
-	}
-	public void setPicture(String picture) {
-		this.picture = picture;
-	}
+//	public String getPicture() {
+//		return picture;
+//	}
+//	public void setPicture(String picture) {
+//		this.picture = picture;
+//	}
 	public String getDescription() {
 		return description;
 	}
@@ -75,6 +78,12 @@ public class Rentals {
 	}
 	public void setUpdated_at(Date updated_at) {
 		this.updated_at = updated_at;
+	}
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
      
      

@@ -1,11 +1,15 @@
 package com.location.location.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,5 +71,10 @@ public class LoginController {
     @PostMapping("/checkLogin")
     public Users checkLogin(@RequestParam String email) {
         return usersService.checkLogin(email);
+    }
+    
+    @GetMapping("/me")
+    public UsersDto getCurrentUser(@AuthenticationPrincipal Users user) {
+        return usersService.getCurrentUser(user);
     }
 }

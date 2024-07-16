@@ -16,6 +16,8 @@ public class UsersDto {
 	   private String email;
 	    private String password;
 	    private String role;
+	    private Date created_at;
+	    private Date updated_at;
 	
 		public String getName() {
 			return name;
@@ -47,6 +49,14 @@ public class UsersDto {
 		}
 		public void setId(long id) {
 			this.id = id;
+		}
+		public UsersDto(long id, String name, String email, Date created_at, Date updated_at) {
+			super();
+			this.id = id;
+			this.name = name;
+			this.email = email;
+			this.created_at = created_at;
+			this.updated_at = updated_at;
 		}
 	
 	
