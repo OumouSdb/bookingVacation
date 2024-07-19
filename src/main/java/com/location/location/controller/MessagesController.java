@@ -27,7 +27,7 @@ public class MessagesController {
 	@Autowired
 	private MessagesService messagesService;
 	
-	@PostMapping(value="/save", consumes="application/json", produces="application/json")
+	@PostMapping(consumes="application/json", produces="application/json")
 	public ResponseEntity<MessagesDto> saveMessage(@RequestBody MessagesDto m) {
 		
 		MessagesDto msg = this.messagesService.save(m);
@@ -35,7 +35,7 @@ public class MessagesController {
 		
 	}
 	
-	@PutMapping("/update/{id}")
+	@PutMapping("/{id}")
 	public MessagesDto updateMessage(@PathVariable("id") final Long id, @RequestBody MessagesDto m) {
 		Optional<Messages> message = Optional.empty();
 		if(message.isPresent()) {
@@ -47,7 +47,7 @@ public class MessagesController {
 		}
 	}
 	
-	@GetMapping(value="/")
+	@GetMapping("")
 	public Iterable<MessagesDto> getMessages() {
 		return this.messagesService.getAllMessages();
 	}
@@ -57,7 +57,7 @@ public class MessagesController {
 		return this.messagesService.getMessageById(id);
 	}
 	
-	@DeleteMapping(value="/messages/{id}")
+	@DeleteMapping(value="/{id}")
 	public ResponseEntity<Long> deleteById(@PathVariable("id") long id) {
 		this.messagesService.deleteMessageById(id);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);
