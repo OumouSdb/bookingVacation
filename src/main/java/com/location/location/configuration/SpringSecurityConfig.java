@@ -1,13 +1,12 @@
 package com.location.location.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -16,78 +15,57 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.location.location.repository.UsersRepository;
 import com.location.location.service.LoginService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 
 @Configuration
+@EnableWebSecurity
 public class SpringSecurityConfig {
-    
-    @Autowired
-    private UsersRepository usersRepository;
-    
-    @Autowired
-    private LoginService loginService;
-    
-    private String jwtKey = "e6729deecc572b7fff727104e902ab7b2a98dd79ac1ad7bf562f5f9d29e997e7";
-//    
-//    @Value("${app.jwtKey}")
-//    private String jwtKey;
 
-    @SuppressWarnings("deprecation")
-	@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeRequests(authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers(
-                        "/v3/api-docs/**",
-                        "/swagger-ui.html",
-                        "/swagger-ui/**",
-                        "/swagger-resources/**",
-                        "/webjars/**"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-            .httpBasic(Customizer.withDefaults());
+    private final LoginService loginService;
 
-        return http.build();
+    private final String jwtKey = "e6729deecc572b7fff727104e902ab7b2a98dd79ac1ad7bf562f5f9d29e997e7";
+
+    public SpringSecurityConfig(LoginService loginService) {
+        this.loginService = loginService;
     }
 
-    private List<GrantedAuthority> getGrantedAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-        return authorities;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeHttpRequests()
+                .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .oauth2ResourceServer().jwt();
+        return http.build();
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), "HmacSHA256");
+        SecretKeySpec secretKey = new SecretKeySpec(jwtKey.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
     }
-    
+
     @Bean
     public JwtEncoder jwtEncoder() {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
-    }
-    
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(loginService).passwordEncoder(bCryptPasswordEncoder);
-        return authenticationManagerBuilder.build();
+        return new NimbusJwtEncoder(new ImmutableSecret<>(jwtKey.getBytes()));
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(loginService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
+    }
 }

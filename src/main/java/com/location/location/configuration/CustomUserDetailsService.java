@@ -22,9 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Autowired
 	private UsersRepository userRepository;
 	
-	public UserDetails loadUserByUserName(String email) throws UsernameNotFoundException{
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 		
-		Users user = userRepository.findByEmail(email);
+		Users user = userRepository.findByEmail(username);
 		
 		return new User(user.getEmail(), user.getPassword(), getGrantedAutorities(user.getRole()));
 
@@ -36,12 +36,8 @@ public class CustomUserDetailsService implements UserDetailsService{
 		return autorities;
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
+
 	
 
 }
