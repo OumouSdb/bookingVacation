@@ -6,8 +6,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Users {
 	
 	@Id
@@ -18,7 +24,7 @@ public class Users {
 	    private Date created_at;
 	    private Date updated_at;
 	    private String password;
-	    
+	    private String token;
 	    private String role;
 	    
 		public long getId() {
@@ -62,6 +68,10 @@ public class Users {
 		}
 		public void setRole(String role) {
 			this.role = role;
+		}
+		public Object orElseThrow(Object object) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	
 		

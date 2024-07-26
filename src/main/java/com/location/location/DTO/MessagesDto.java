@@ -4,16 +4,11 @@ package com.location.location.DTO;
 public class MessagesDto {
 		
 	
-		private long Id;
+		private long id;
 	 	private String message;
 	    private long user_id;
 	    private long rental_id;
-		public long getId() {
-			return Id;
-		}
-		public void setId(long id) {
-			Id = id;
-		}
+	
 		public String getMessage() {
 			return message;
 		}
@@ -31,6 +26,12 @@ public class MessagesDto {
 		}
 		public void setRental_id(long rental_id) {
 			this.rental_id = rental_id;
+		}
+		public long getId() {
+			return id;
+		}
+		public void setId(long id) {
+			this.id = id;
 		}
 	    
 	    
