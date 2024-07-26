@@ -2,8 +2,7 @@ package com.location.location.DTO;
 
 import java.io.Serializable;
 
-@SuppressWarnings("serial")
-public class LoginDto implements Serializable {
+public class LoginDto  {
 	
 	private String email;
 	private String password;

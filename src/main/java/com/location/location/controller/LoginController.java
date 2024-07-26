@@ -7,11 +7,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.location.location.DTO.LoginDto;
 import com.location.location.DTO.LoginResponseDto;
 import com.location.location.DTO.UsersDto;
 import com.location.location.model.Users;
@@ -26,62 +28,45 @@ public class LoginController {
     private UsersService usersService;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private JWTService jwtService;
 
     @PostMapping("/register")
-    public UsersDto saveUser(@RequestBody UsersDto u) {
-        return usersService.save(u);
+    public ResponseEntity<UsersDto> saveUser(@RequestBody UsersDto u) {
+        UsersDto savedUser = usersService.save(u);
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> getToken(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginRequest) {
         try {
-            Authentication authentication = authenticate(email, password);
-            if (authentication != null && authentication.isAuthenticated()) {
-                String token = jwtService.generateToken(authentication);
-                Users user = usersService.checkLogin(email);
-                LoginResponseDto response = new LoginResponseDto();
-                response.setId(user.getId());
-                response.setName(user.getName());
-               
-                response.setEmail(user.getEmail());
-                response.setToken(token);
-                return ResponseEntity.ok(response);
-            }
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Users user = usersService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            String token = jwtService.generateToken(userDetails, user.getId());
+            
+            LoginResponseDto response = new LoginResponseDto(user.getId(), user.getName(), user.getEmail(), user.getCreated_at(), user.getUpdated_at(), token);
+
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
-
-    private Authentication authenticate(String email, String password) {
-        Users user = usersService.checkLogin(email);
-        if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            UsernamePasswordAuthenticationToken authToken = 
-                    new UsernamePasswordAuthenticationToken(email, password);
-            return authenticationManager.authenticate(authToken);
-        }
-        return null;
-    }
-
-//    @PostMapping("/checkLogin")
-//    public Users checkLogin(@RequestParam String email) {
-//        return usersService.checkLogin(email);
-//    }
 
     @GetMapping("/me")
-    public UsersDto getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("User is not authenticated");
+    public ResponseEntity<LoginResponseDto> getCurrentUser(@RequestHeader("Authorization") String token) {
+        try {
+            LoginResponseDto currentUser = usersService.getCurrentUser(token);
+            return ResponseEntity.ok(currentUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        String email = authentication.getName(); // Obtenir l'email de l'utilisateur authentifié
-        return usersService.getCurrentUser(email);
     }
 }

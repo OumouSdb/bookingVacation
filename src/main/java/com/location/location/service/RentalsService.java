@@ -41,13 +41,13 @@ public class RentalsService {
 	            String imageName = image.getOriginalFilename(); // Récupération du nom de l'image
 	            String contentType = image.getContentType(); // Récupération du type de contenu
 	         
-	            Path path = Paths.get(storageFolder, "images", imageName); // Définition du chemin de l'image
+	            Path path = Paths.get(storageFolder, imageName); // Définition du chemin de l'image
 	            if (!Files.exists(path.getParent())) {
 	                Files.createDirectories(path.getParent()); // Création des répertoires si nécessaires
 	            }
 	            Files.write(path, image.getBytes()); // Écriture de l'image dans le système de fichiers
 
-	            return storageFolder + "/images/" + imageName; // Retour de l'URL de l'image
+	            return storageFolder  + imageName; // Retour de l'URL de l'image
 	        } catch (IOException e) {
 	            throw new RuntimeException("Échec de l'enregistrement de l'image", e); // Gestion des exceptions d'entrée/sortie
 	        }
@@ -83,11 +83,11 @@ public class RentalsService {
 	 rentalsRepository.deleteById(id);
 	}	
 	
-	public RentalsDto save(RentalsDto rDto) {
-		Rentals u = modelMapper.map(rDto, Rentals.class);
-		Rentals saveRent = rentalsRepository.save(u);
-		RentalsDto saveDto = modelMapper.map(saveRent, RentalsDto.class);
-		return saveDto;
-	}
+//	public RentalsDto save(RentalsDto rDto) {
+//		Rentals u = modelMapper.map(rDto, Rentals.class);
+//		Rentals saveRent = rentalsRepository.save(u);
+//		RentalsDto saveDto = modelMapper.map(saveRent, RentalsDto.class);
+//		return saveDto;
+//	}
 
 }
