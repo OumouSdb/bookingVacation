@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
-
-
-
 @SpringBootApplication
 public class LocationApplication {
 
@@ -27,14 +23,11 @@ public class LocationApplication {
 		SpringApplication.run(LocationApplication.class, args);
 	}
 	
-	
 	@Bean
 	public ModelMapper modelMapper() {
 	    return new ModelMapper();
 	}
 	
-
-
 	    @Bean
 	    public WebMvcConfigurer corsConfigurer() {
 	        return new WebMvcConfigurer() {
@@ -48,20 +41,6 @@ public class LocationApplication {
 	            }
 	        };
 	    }
-	
-
-//	  @ControllerAdvice
-//	  public class GlobalExceptionHandler {
-//
-//	      @ExceptionHandler(MethodArgumentNotValidException.class)
-//	      public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//	          String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-//	                  .map(DefaultMessageSourceResolvable::getDefaultMessage)
-//	                  .collect(Collectors.joining(", "));
-//	          return ResponseEntity.badRequest().body(errorMessage);
-//	      }
-//	  }
-	  
 
 
 }
