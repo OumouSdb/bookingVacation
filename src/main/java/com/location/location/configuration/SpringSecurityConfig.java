@@ -22,22 +22,20 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.location.location.service.JWTService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+	
+	@Value("${security.jwt.secret-key}")
+	private String jwtKey;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
     private JwtAuthentificationFilter jwtAuthenticationFilter;
-
-    @Value("${security.jwt.secret-key}")
-    private String jwtKey;
 
     @SuppressWarnings("deprecation")
 	@Bean
@@ -56,7 +54,6 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    @Primary
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

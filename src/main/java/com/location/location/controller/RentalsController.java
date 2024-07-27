@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,12 +36,17 @@ public class RentalsController {
 	@Value("${app.storagefolder}")
 	private String storageFolder;
 	
-	@Autowired
-	private ObjectMapper objectMapper;
-	
 	
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RentalsDto> createImage(@RequestParam("pic") MultipartFile pic,
+                                                @ModelAttribute RentalsDto dto
+                                               ) {
+        return rentalsService.saveRentalWithImage(pic, dto);
+    }
+	
+
+	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RentalsDto> updateImage(@RequestParam("pic") MultipartFile pic,
                                                 @ModelAttribute RentalsDto dto) {
         return rentalsService.saveRentalWithImage(pic, dto);
     }

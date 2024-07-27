@@ -59,7 +59,7 @@ public class UsersService {
         Users savedUser = usersRepository.save(u);
 
         // Charger les détails de l'utilisateur par email
-        UserDetails userDetails = customUserDetailsService.loadUserByEmail(uDto.getEmail());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(uDto.getEmail());
 
         // Générer le jeton JWT pour l'utilisateur enregistré
         String token = jwtService.generateToken(userDetails, savedUser.getId());
