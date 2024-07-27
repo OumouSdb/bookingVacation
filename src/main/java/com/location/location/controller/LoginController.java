@@ -1,5 +1,4 @@
 package com.location.location.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import com.location.location.DTO.LoginDto;
 import com.location.location.DTO.LoginResponseDto;
 import com.location.location.DTO.UsersDto;
@@ -33,13 +30,13 @@ public class LoginController {
     @Autowired
     private JWTService jwtService;
 
-    @PostMapping("/register")
+    @PostMapping(value="/register", consumes="application/json", produces="application/json")
     public ResponseEntity<UsersDto> saveUser(@RequestBody UsersDto u) {
         UsersDto savedUser = usersService.save(u);
         return ResponseEntity.ok(savedUser);
     }
 
-    @PostMapping("/login")
+    @PostMapping(value="/login", consumes="application/json", produces="application/json")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -60,7 +57,7 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/me")
+    @GetMapping(value="/me", consumes="application/json", produces="application/json")
     public ResponseEntity<LoginResponseDto> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
             LoginResponseDto currentUser = usersService.getCurrentUser(token);
