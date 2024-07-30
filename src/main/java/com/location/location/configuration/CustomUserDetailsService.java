@@ -23,8 +23,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     
     /**
-	 * Cette classe permet d'associer notre utilisateur en base de données à l'utilisateur de spring security
-	 * Si le user est present en base de données, spring security fait appel au contexte afin de lui donner la permission
+	 * Charge les détails de l'utilisateur en fonction de son email depuis la base de données et les transforme en un objet UserDetails que Spring Security
+	 * utilise pour authentifier et autoriser l'utilisateur.
+	 * Si les informations de l'utilisateur sont correctes, Spring Security crée une session d'authentification pour l'utilisateur.
 	 */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -35,12 +36,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
             user.getPassword(),
-            getGrantedAuthorities(user.getRole()) // Ajout des rôles ici
+            getGrantedAuthorities(user.getRole())
         );
     }
 
     /**
-     * Cette methode permet de donner ax=cces a certaines requete a l'aide d'un role
+     * Utilisée pour transformer les rôles de l'utilisateur en autorités reconnues par Spring Security. 
+     * Ces autorités sont ensuite utilisées par Spring Security pour autoriser l'accès de l'utilisateur aux différentes
+     * parties de l'application en fonction de ses rôles.
      * @param role
      * @return
      */

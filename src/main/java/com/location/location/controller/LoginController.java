@@ -30,13 +30,13 @@ public class LoginController {
     @Autowired
     private JWTService jwtService;
 
-    @PostMapping(value="/register", consumes="application/json", produces="application/json")
+    @PostMapping(value="/register")
     public ResponseEntity<UsersDto> saveUser(@RequestBody UsersDto u) {
         UsersDto savedUser = usersService.save(u);
         return ResponseEntity.ok(savedUser);
     }
 
-    @PostMapping(value="/login", consumes="application/json", produces="application/json")
+    @PostMapping(value="/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -57,7 +57,7 @@ public class LoginController {
         }
     }
 
-    @GetMapping(value="/me", consumes="application/json", produces="application/json")
+    @GetMapping(value="/me")
     public ResponseEntity<LoginResponseDto> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
             LoginResponseDto currentUser = usersService.getCurrentUser(token);

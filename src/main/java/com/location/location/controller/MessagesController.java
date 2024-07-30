@@ -23,7 +23,7 @@ public class MessagesController {
 	@Autowired
 	private MessagesService messagesService;
 	
-	@PostMapping(consumes="application/json", produces="application/json")
+	@PostMapping("")
 	public ResponseEntity<MessagesDto> saveMessage(@RequestBody MessagesDto m) {
 		
 		MessagesDto msg = this.messagesService.save(m);
@@ -31,9 +31,9 @@ public class MessagesController {
 		
 	}
 	
-	@PutMapping(value="/{id}", consumes="application/json", produces="application/json")
+	@PutMapping(value="/{id}")
 	public MessagesDto updateMessage(@PathVariable("id") final Long id, @RequestBody MessagesDto m) {
-		Optional<Messages> message = Optional.empty();
+		Optional<MessagesDto> message = Optional.empty();
 		if(message.isPresent()) {
 			
 			return messagesService.save(m);
@@ -43,17 +43,17 @@ public class MessagesController {
 		}
 	}
 	
-	@GetMapping(value="", consumes="application/json", produces="application/json")
+	@GetMapping(value="")
 	public Iterable<MessagesDto> getMessages() {
 		return this.messagesService.getAllMessages();
 	}
 	
-	@GetMapping(value="/{id}", consumes="application/json", produces="application/json")
+	@GetMapping(value="/{id}")
 	public Optional<MessagesDto> getMessageById(@PathVariable("id") long id) {
 		return this.messagesService.getMessageById(id);
 	}
 	
-	@DeleteMapping(value="/{id}", consumes="application/json", produces="application/json")
+	@DeleteMapping(value="/{id}")
 	public ResponseEntity<Long> deleteById(@PathVariable("id") long id) {
 		this.messagesService.deleteMessageById(id);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);

@@ -38,20 +38,19 @@ public class SpringSecurityConfig {
 	    @Bean
 	    
 	    /**
-	     * Ne met pas de filtres sur certaines endPoint ainsi que sur swagger
-	     * met un filtre sur les Session sans etat
-	     * authetication provider ?
-	     * addFilterBefore ?
-	     * http build ?
+	     * Désactive la protection CSRF car l'application utilise des jetons JWT qui ne nécessitent pas cette protection.
+	     * Permet l'accès public (sans authentification) aux URL spécifiées.
+		 * Exige une authentification pour toutes les autres requêtes.
+		 * Ajoute un filtre personnalisé (jwtAuthenticationFilter) avant le filtre UsernamePasswordAuthenticationFilter pour traiter les jetons JWT.
 	     * @param http
-	     * @return
+	     * @return securityFilterChain
 	     * @throws Exception
 	     */
 	    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	        http
 	            .csrf(csrf -> csrf.disable())
 	            .authorizeRequests(authorize -> authorize
-	                .requestMatchers("/api/auth/**", "/images/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+	                .requestMatchers("/api/auth/login","/api/auth/register", "/images/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 	                .anyRequest().authenticated()
 	            )
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -63,7 +62,7 @@ public class SpringSecurityConfig {
 
 	    @Bean
 	   /**
-	    * Utilise Bcrypte pour encode le mot de passe ?
+	    * BCrypt est un algorithme de hachage de mot de passe sécurisé.
 	    * @return
 	    */
 	    BCryptPasswordEncoder passwordEncoder() {
@@ -72,7 +71,8 @@ public class SpringSecurityConfig {
 
 	    @Bean
 	    /**
-	     * Decode le token avec l'algotythme HmacSHA256 ?
+	     * Utilise une clé secrète pour créer un JwtDecoder avec l'algorithme de hachage HmacSHA256.
+		 * Le JwtDecoder est utilisé pour décoder et vérifier les jetons JWT.
 	     * @return
 	     */
 	    JwtDecoder jwtDecoder() {
@@ -82,7 +82,8 @@ public class SpringSecurityConfig {
 
 	    @Bean
 	    /**
-	     * Encode le token avec l'algorythm becrypte
+	     * Utilise une clé secrète pour créer un JwtEncoder.
+		 *	Le JwtEncoder est utilisé pour encoder et signer les jetons JWT
 	     * @return
 	     */
 	     JwtEncoder jwtEncoder() {
@@ -91,7 +92,7 @@ public class SpringSecurityConfig {
 
 	    @Bean
 	    /**
-	     *  ???
+	     * 
 	     * @param http
 	     * @return
 	     * @throws Exception
@@ -104,7 +105,7 @@ public class SpringSecurityConfig {
 
 	    @Bean
 	    /**
-	     *  ???
+	     * 
 	     * @return
 	     */
 	     AuthenticationProvider authenticationProvider() {

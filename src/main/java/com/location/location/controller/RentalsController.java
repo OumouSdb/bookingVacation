@@ -44,17 +44,17 @@ public class RentalsController {
         return rentalsService.saveRentalWithImage(pic, dto);
     }
 	
-	@GetMapping(value="", consumes="application/json", produces="application/json")
+	@GetMapping(value="")
 	public Iterable<RentalsDto> getRentals() {
 		return this.rentalsService.getAllRentals();
 	}
 	
-	@GetMapping(value = "/{id}", consumes="application/json", produces="application/json")
+	@GetMapping(value = "/{id}")
 	public Optional<RentalsDto> getUserById(@PathVariable("id") long id) {
 		return this.rentalsService.getrentById(id);
 	}
 	
-	@DeleteMapping(value="/{id}", consumes="application/json", produces="application/json")
+	@DeleteMapping(value="/{id}")
 	public ResponseEntity<Long> deleteById(@PathVariable("id") Long id) {
 		this.rentalsService.deleterentById(id);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);
