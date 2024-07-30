@@ -27,13 +27,17 @@ public class JwtAuthentificationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
     
     /**
-	 * OncePerRequestFilter garantie une seule execution par requete, Verifie si le header est present est commence par Bearer
-	 * Extrait le token sans le "Bearer ", assigner la valeur a la variable jwt
-	 * Associer le user au token et donner la permission à l'utilisateur.
-	 * retourne la requet aisni que la reponse.
-	 * 
+	  * OncePerRequestFilter est une classe utilitaire fournie par Spring Security.
+	  * Garantit que la méthode de filtrage (doFilterInternal) est exécutée une seule fois par requête HTTP exemple (JWT)
+	  * 
 	 */
 
+    
+    /**
+     * utilisée pour implémenter la logique de filtrage personnalisée pour l'authentification des utilisateurs.
+     * Le filtre vérifie les en-têtes de la requête pour un jeton JWT, extrait les informations d'utilisateur
+     * Valide le jeton et configure le contexte de sécurité de Spring Security.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -42,11 +46,10 @@ public class JwtAuthentificationFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // Check if Authorization header is present and starts with Bearer
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7); // Extract the token without "Bearer "
+            jwt = authHeader.substring(7);
         } else if (authHeader != null) {
-            jwt = authHeader; // Handle the case where Bearer is not present
+            jwt = authHeader;
         }
 
         if (jwt != null) {
