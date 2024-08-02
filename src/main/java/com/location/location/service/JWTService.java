@@ -23,21 +23,12 @@ public class JWTService {
 	    @Value("${security.jwt.expiration-time}")
 	    private long jwtExpiration;
 	    
-	    /**
-	     *  ?????
-	     * @return
-	     */
+
 
 	    private Key getSigningKey() {
 	        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 	    }
 	    
-	    /**
-	     * Gneration du token
-	     * @param userDetails
-	     * @param userId
-	     * @return un token avec le sinformation du user
-	     */
 
 	    @SuppressWarnings("deprecation")
 		public String generateToken(UserDetails userDetails, Long userId) {
@@ -55,21 +46,13 @@ public class JWTService {
 	                .compact();
 	    }
 	    
-	    /**
-	     * Extrait les informations du user
-	     * @param token
-	     * @return
-	     */
+	
 
 	    public String extractUsername(String token) {
 	        return extractAllClaims(token).getSubject();
 	    }
 
-	    /**
-	     *  ???
-	     * @param token
-	     * @return
-	     */
+	  
 	    public Claims extractAllClaims(String token) {
 	        return Jwts.parserBuilder()
 	                .setSigningKey(getSigningKey())
@@ -78,22 +61,13 @@ public class JWTService {
 	                .getBody();
 	    }
 
-	    /**
-	     *  verifie la validité du token
-	     * @param token
-	     * @param userDetails
-	     * @return
-	     */
+
 	    public boolean isTokenValid(String token, UserDetails userDetails) {
 	        final String username = extractUsername(token);
 	        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	    }
 
-	    /**
-	     * Verifie la validité du token
-	     * @param token
-	     * @return
-	     */
+
 	    private boolean isTokenExpired(String token) {
 	        return extractAllClaims(token).getExpiration().before(new Date());
 	    }

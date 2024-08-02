@@ -53,6 +53,7 @@ public class LoginController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
+        	System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

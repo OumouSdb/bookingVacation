@@ -1,0 +1,22 @@
+package com.example.demo;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+
+public class JwtService {
+	
+	private static final String "EngWODBZSYosSuKwYRSQbFkyB9S0WRSg5MrXwulF3OLsmEl8c7CpLXYSj+v/Fdwg\r\n";
+
+	public String extractUsername(String jwt) {
+		return null;
+	}
+	
+	private Claims extractAllClaims(String token) {
+		return Jwts
+				.parserBuilder()
+				.setSigningKey()
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
+	}
+}

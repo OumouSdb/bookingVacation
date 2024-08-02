@@ -9,8 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.location.location.DTO.MessagesDto;
+import com.location.location.DTO.UsersDto;
 import com.location.location.model.Messages;
+import com.location.location.model.Rentals;
+import com.location.location.model.Users;
 import com.location.location.repository.MessagesRepository;
+import com.location.location.repository.RentalsRepository;
+import com.location.location.repository.UsersRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 @Service
@@ -19,6 +26,14 @@ public class MessagesService {
 	
 	@Autowired
 	private MessagesRepository messagesRepository;
+	
+	@Autowired
+	private RentalsRepository rentalsRepository;
+	
+	
+	
+	@Autowired
+	private UsersRepository usersRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -44,10 +59,22 @@ public class MessagesService {
 	 messagesRepository.deleteById(id);
 	}	
 	
-	public MessagesDto save(MessagesDto mDto) {
-		Messages m = modelMapper.map(mDto, Messages.class);
-		Messages saveMessage = messagesRepository.save(m);
-		MessagesDto saveDto = modelMapper.map(saveMessage, MessagesDto.class);
-		return saveDto;
+	public Messages save(Long rentalId, Long userId, String messageContent) {
+		
+		 Optional<Users> user = usersRepository.findById(userId);
+		    Optional<Rentals> rental = rentalsRepository.findById(rentalId);
+
+		    if (user.isPresent() && rental.isPresent()) {
+		        Messages message = new Messages();
+		        message.setUserId(user.get());
+		        message.setRentalId(rental.get());
+		        message.setMessage(messageContent);
+		        return messagesRepository.save(message);
+		    } else {
+		        throw new IllegalArgumentException("Invalid User ID or Rental ID");
+		    }
+	
 	}
+
+
 }

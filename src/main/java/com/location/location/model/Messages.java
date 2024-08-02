@@ -18,9 +18,9 @@ public class Messages {
 	 	private String message;
 	 	@ManyToOne
 	    @JoinColumn(name = "rentals_id", nullable = false)
-	    private Rentals rental_id;
+	    private Rentals rentalId;
 
 	    @ManyToOne
 	    @JoinColumn(name = "users_id", nullable = false)
-	    private Users user_id;
+	    private Users userId;
 }

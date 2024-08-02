@@ -1,0 +1,31 @@
+package com.example.demo.service;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.controller.AuthenticationRequest;
+import com.example.demo.controller.AuthenticationResponse;
+import com.example.demo.controller.RegisterRequest;
+import com.example.demo.user.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AuthenticationService {
+	
+	private final UserRepository repository;
+	
+
+
+	public AuthenticationResponse register(RegisterRequest request) {
+		var user = User.builder()
+				.fistname(request.getFirstname())
+		return null;
+	}
+	
+	public AuthenticationResponse authenticate(AuthenticationRequest request) {
+		return null;
+	}
+	
+}
