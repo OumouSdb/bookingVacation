@@ -1,0 +1,8 @@
+package com.example.demo;
+
+public class JwtService {
+
+	public String extractUsername(String jwt) {
+		return null;
+	}
+}

@@ -49,59 +49,39 @@ public class RentalsService {
 	                throw new RuntimeException("Le fichier image est vide");
 	            }
 
-	            String imageName = image.getOriginalFilename(); // Récupération du nom de l'image
-	            Path path = Paths.get(storageFolder, imageName); // Définition du chemin de l'image
+	            String imageName = image.getOriginalFilename();
+	            Path path = Paths.get(storageFolder, imageName);
 	            if (!Files.exists(path.getParent())) {
-	                Files.createDirectories(path.getParent()); // Création des répertoires si nécessaires
+	                Files.createDirectories(path.getParent());
 	            }
-	            Files.write(path, image.getBytes()); // Écriture de l'image dans le système de fichiers
+	            Files.write(path, image.getBytes());
 
-	            return storageFolder + imageName; // Retour de l'URL de l'image
+	            return storageFolder + imageName;
 	        } catch (IOException e) {
-	            throw new RuntimeException("Échec de l'enregistrement de l'image", e); // Gestion des exceptions d'entrée/sortie
-	        }
+	            throw new RuntimeException("Échec de l'enregistrement de l'image", e); 
+	            }
 	    }
 
 	 public ResponseEntity<RentalsDto> saveRentalWithImage(MultipartFile image, RentalsDto iDto) {
-
-		    // Obtenez l'utilisateur actuellement authentifié
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-		    // Suppose que votre entité User a un champ 'email' (ou un champ similaire pour l'identifiant utilisateur)
 		    Users user = usersRepository.findByEmail(userDetails.getUsername());
 		    if (user == null) {
 		        throw new UsernameNotFoundException("User not found with email: " + userDetails.getUsername());
 		    }
 		    Long userId = user.getId();
-
-		    String imageUrl = saveImage(image); // Sauvegarde de l'image et récupération de l'URL
-		    iDto.setPicture(imageUrl); // Mise à jour de l'URL de l'image dans le DTO
-
-		    // Conversion du DTO en entité
+		    String imageUrl = saveImage(image);
+		    iDto.setPicture(imageUrl);
 		    Rentals img = modelMapper.map(iDto, Rentals.class);
-
-		    // Vérifiez si l'entité existe déjà
-		    boolean isNew = img.getId() == null || !rentalsRepository.existsById(img.getId());
-
-		    // Enregistrement de l'entité mise à jour
+		    img.setOwnerId(user);
 		    Rentals savedImage = rentalsRepository.save(img);
 
-		    // Conversion de l'entité sauvegardée en DTO
 		    RentalsDto savedDto = modelMapper.map(savedImage, RentalsDto.class);
-
-		    // Mettre à jour les dates appropriées
-		    if (!isNew) {
-		        savedDto.setUpdated_at(new Date());
-		    } else {
-		        savedDto.setCreated_at(new Date());
-		    }
-
-		    // Met à jour le champ owner_id avec l'ID de l'utilisateur authentifié
-		    savedDto.setOwner_id(userId);
+		    savedDto.setOwnerId(user.getId());
 
 		    return ResponseEntity.ok(savedDto);
 		}
+
 
 
 	

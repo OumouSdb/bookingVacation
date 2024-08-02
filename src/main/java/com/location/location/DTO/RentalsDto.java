@@ -8,13 +8,13 @@ import lombok.Data;
 public class RentalsDto {
 	
 
-	private Long id;
+	private long id;
 	 private String name;
      private int surface;
      private int price;
      private String picture;
      private String description;
-     private long owner_id;
+     private long ownerId;
      private Date created_at;
      private Date updated_at;
      

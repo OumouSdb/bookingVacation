@@ -34,6 +34,6 @@ public class Rentals {
      private Date updated_at;
      @ManyToOne
      @JoinColumn(name = "owner_id", nullable = false)
-     private Users owner;
+     private Users ownerId;
 	
 }
