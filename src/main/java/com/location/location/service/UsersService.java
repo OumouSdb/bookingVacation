@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.authenticator.SavedRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import com.location.location.DTO.UsersDto;
 import com.location.location.configuration.CustomUserDetailsService;
 import com.location.location.model.Users;
 import com.location.location.repository.UsersRepository;
+
+import net.bytebuddy.dynamic.loading.PackageDefinitionStrategy.Definition.Undefined;
 
 @Service
 public class UsersService {
@@ -54,41 +57,24 @@ public class UsersService {
 
     public UsersDto save(UsersDto uDto) {
         uDto.setPassword(passwordEncoder.encode(uDto.getPassword()));
-        uDto.setCreated_at(new Date());
+        if(uDto.getRole() == null || uDto.getRole() == "") {
+        	uDto.setRole("USER");
+        }
         Users u = modelMapper.map(uDto, Users.class);
         Users savedUser = usersRepository.save(u);
-
-        // Charger les détails de l'utilisateur par email
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(uDto.getEmail());
-
-        // Générer le jeton JWT pour l'utilisateur enregistré
         String token = jwtService.generateToken(userDetails, savedUser.getId());
-
-        // Mettre à jour l'objet UsersDto avec le jeton
+        savedUser.setToken(token);
         UsersDto savedUserDto = modelMapper.map(savedUser, UsersDto.class);
-        savedUserDto.setToken(token);
-
+        
+      
         return savedUserDto;
-    }
-
-    public ResponseEntity<LoginResponseDto> checkLogin(String email, String password) {
-        Users u = usersRepository.findByEmail(email);
-        if (u != null && passwordEncoder.matches(password, u.getPassword())) {
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("user_id", u.getId());
-            claims.put("user_fullName", u.getName());
-
-            LoginResponseDto response = new LoginResponseDto();
-           // response.setToken(jwtService.doGenerateToken(claims, email));
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     public void updatePasswords() {
         List<Users> users = usersRepository.findAll();
         for (Users user : users) {
-            if (!user.getPassword().startsWith("$2a$")) { // Vérifie si le mot de passe n'est pas encodé en BCrypt
+            if (!user.getPassword().startsWith("$2a$")) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 user.setUpdated_at(new Date());
                 usersRepository.save(user);
@@ -97,9 +83,16 @@ public class UsersService {
     }
 
     
-    public Optional<Users> findByEmail(String email) {
-        return Optional.of(usersRepository.findByEmail(email));
+    public Optional<UsersDto> findByEmail(String email) {
+        Users user = usersRepository.findByEmail(email);
+        if (user != null) {
+            return Optional.of(modelMapper.map(user, UsersDto.class));
+        } else {
+            return Optional.empty();
+        }
     }
+
+
 
     public LoginResponseDto getCurrentUser(String token) {
         String jwtToken = token.replace("Bearer ", "");
@@ -110,10 +103,14 @@ public class UsersService {
     }
 
     
-    public Optional<Users> findById(Long id) {
-        return usersRepository.findById(id);
+    public UsersDto findById(Long id) {
+        Optional<Users> userOptional = usersRepository.findById(id);
+        
+        if (userOptional.isPresent()) {
+            return modelMapper.map(userOptional.get(), UsersDto.class);
     }
-
+        return null;
+    }
 
     public LoginResponseDto getCurrentUser(Users user) {
         return new LoginResponseDto(user.getId(), user.getName(), user.getEmail(), user.getCreated_at(), user.getUpdated_at(), null);

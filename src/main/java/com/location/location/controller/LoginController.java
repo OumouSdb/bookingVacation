@@ -45,7 +45,7 @@ public class LoginController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Users user = usersService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            UsersDto user = usersService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             String token = jwtService.generateToken(userDetails, user.getId());
             

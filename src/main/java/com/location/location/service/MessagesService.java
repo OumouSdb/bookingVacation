@@ -30,8 +30,6 @@ public class MessagesService {
 	@Autowired
 	private RentalsRepository rentalsRepository;
 	
-	
-	
 	@Autowired
 	private UsersRepository usersRepository;
 	
@@ -59,17 +57,18 @@ public class MessagesService {
 	 messagesRepository.deleteById(id);
 	}	
 	
-	public Messages save(Long rentalId, Long userId, String messageContent) {
+	public MessagesDto save(Long rentalId, Long userId, String messageContent) {
 		
 		 Optional<Users> user = usersRepository.findById(userId);
 		    Optional<Rentals> rental = rentalsRepository.findById(rentalId);
-
+		    
 		    if (user.isPresent() && rental.isPresent()) {
 		        Messages message = new Messages();
 		        message.setUserId(user.get());
 		        message.setRentalId(rental.get());
 		        message.setMessage(messageContent);
-		        return messagesRepository.save(message);
+		         messagesRepository.save(message);
+		         return modelMapper.map(message, MessagesDto.class);
 		    } else {
 		        throw new IllegalArgumentException("Invalid User ID or Rental ID");
 		    }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import com.location.location.DTO.RentalsDto;
 import com.location.location.DTO.UsersDto;
@@ -41,27 +43,38 @@ public class RentalsService {
 	private ModelMapper modelMapper;
 	
 	@Value("${app.storagefolder}")
-	private String storageFolder;
+    private String storageFolder;
 	
-	 private String saveImage(MultipartFile image) {
-	        try {
-	            if (image.isEmpty()) {
-	                throw new RuntimeException("Le fichier image est vide");
-	            }
+	private String saveImage(MultipartFile image) {
+	    try {
+	        if (image.isEmpty()) {
+	            throw new RuntimeException("Le fichier image est vide");
+	        }
 
-	            String imageName = image.getOriginalFilename();
-	            Path path = Paths.get(storageFolder, imageName);
-	            if (!Files.exists(path.getParent())) {
-	                Files.createDirectories(path.getParent());
-	            }
-	            Files.write(path, image.getBytes());
+	        String imageName = image.getOriginalFilename();
+	        Path path = Paths.get(storageFolder, imageName);
 
-	            return storageFolder + imageName;
-	        } catch (IOException e) {
-	            throw new RuntimeException("Échec de l'enregistrement de l'image", e); 
-	            }
+	        System.out.println("Saving file to: " + path.toString());
+
+	        if (!Files.exists(path.getParent())) {
+	            Files.createDirectories(path.getParent());
+	        }
+	        Files.write(path, image.getBytes());
+
+	        System.out.println("File saved successfully!");
+
+	        // Retourne l'URL où l'image peut être accédée
+	        String imageUrl = "http://localhost:3001/" + imageName;
+	        return imageUrl;
+	    } catch (IOException e) {
+	        e.printStackTrace();  // Imprime la trace de la pile pour diagnostiquer l'erreur
+	        throw new RuntimeException("Échec de l'enregistrement de l'image", e);
 	    }
+	}
 
+
+
+	 		
 	 public ResponseEntity<RentalsDto> saveRentalWithImage(MultipartFile image, RentalsDto iDto) {
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -78,7 +91,6 @@ public class RentalsService {
 
 		    RentalsDto savedDto = modelMapper.map(savedImage, RentalsDto.class);
 		    savedDto.setOwnerId(user.getId());
-
 		    return ResponseEntity.ok(savedDto);
 		}
 

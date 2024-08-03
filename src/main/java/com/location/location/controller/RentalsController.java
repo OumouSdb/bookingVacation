@@ -27,10 +27,6 @@ public class RentalsController {
 	@Autowired
 	RentalsService rentalsService;
 	
-	@Value("${app.storagefolder}")
-	private String storageFolder;
-	
-	
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RentalsDto> createImage(@RequestParam("pic") MultipartFile pic,
                                                 @ModelAttribute RentalsDto dto) {

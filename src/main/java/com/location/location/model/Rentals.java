@@ -4,6 +4,9 @@ package com.location.location.model;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +33,9 @@ public class Rentals {
      private int price;
     private String picture;
      private String description;
+     @CreationTimestamp
      private Date created_at;
+     @UpdateTimestamp
      private Date updated_at;
      @ManyToOne
      @JoinColumn(name = "owner_id", nullable = false)

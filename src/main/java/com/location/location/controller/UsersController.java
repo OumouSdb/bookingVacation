@@ -49,14 +49,13 @@ public class UsersController {
     }
 
     @GetMapping(value="/user/{id}")
-    public ResponseEntity<LoginResponseDto> getUserById(@PathVariable Long id) {
-        Optional<Users> userOptional = usersService.findById(id);
-        if (userOptional.isPresent()) {
-            Users user = userOptional.get();
-            LoginResponseDto userGetMe = usersService.getCurrentUser(user);
-            return ResponseEntity.ok(userGetMe);
-        } else {
+    public ResponseEntity<UsersDto> getUserById(@PathVariable Long id) {
+        try {
+            UsersDto userDto = usersService.findById(id);
+            return ResponseEntity.ok(userDto);
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 }
