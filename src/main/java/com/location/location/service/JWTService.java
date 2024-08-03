@@ -22,14 +22,11 @@ public class JWTService {
 
 	    @Value("${security.jwt.expiration-time}")
 	    private long jwtExpiration;
-	    
-
 
 	    private Key getSigningKey() {
 	        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 	    }
 	    
-
 	    @SuppressWarnings("deprecation")
 		public String generateToken(UserDetails userDetails, Long userId) {
 	        Map<String, Object> claims = new HashMap<>();
@@ -45,14 +42,11 @@ public class JWTService {
 	                .signWith(SignatureAlgorithm.HS256, getSigningKey())
 	                .compact();
 	    }
-	    
-	
 
 	    public String extractUsername(String token) {
 	        return extractAllClaims(token).getSubject();
 	    }
 
-	  
 	    public Claims extractAllClaims(String token) {
 	        return Jwts.parserBuilder()
 	                .setSigningKey(getSigningKey())
@@ -60,7 +54,6 @@ public class JWTService {
 	                .parseClaimsJws(token)
 	                .getBody();
 	    }
-
 
 	    public boolean isTokenValid(String token, UserDetails userDetails) {
 	        final String username = extractUsername(token);

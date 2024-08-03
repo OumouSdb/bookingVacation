@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -34,9 +35,7 @@ public class SpringSecurityConfig {
 	    @Autowired
 	    private JwtAuthentificationFilter jwtAuthenticationFilter;
 
-	    @SuppressWarnings("deprecation")
-	    @Bean
-	    
+	   
 	    /**
 	     * Désactive la protection CSRF car l'application utilise des jetons JWT qui ne nécessitent pas cette protection.
 	     * Permet l'accès public (sans authentification) aux URL spécifiées.
@@ -46,11 +45,14 @@ public class SpringSecurityConfig {
 	     * @return securityFilterChain
 	     * @throws Exception
 	     */
+	    @SuppressWarnings("deprecation")
+	    @Bean
 	    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	        http
 	            .csrf(csrf -> csrf.disable())
 	            .authorizeRequests(authorize -> authorize
-	                .requestMatchers("/api/auth/login","/api/auth/register", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+	                .requestMatchers("/static/**", "**.jpg", "**.png", "**.jpeg","**.JPG").permitAll()
+	                .requestMatchers("/api/auth/login","/api/auth/register","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 	                .anyRequest().authenticated()
 	            )
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -24,23 +24,17 @@ public class MessagesController {
 	private MessagesService messagesService;
 	
 	@PostMapping
-	public ResponseEntity<Messages> saveMessage(@RequestBody MessagesDto messageDto) {
-	    Messages savedMessage = messagesService.save(messageDto.getRental_id(), messageDto.getUser_id(), messageDto.getMessage());
+	public ResponseEntity<MessagesDto> saveMessage(@RequestBody MessagesDto messageDto) {
+	    MessagesDto savedMessage = messagesService.save(messageDto.getRental_id(), messageDto.getUser_id(), messageDto.getMessage());
 	    return ResponseEntity.ok(savedMessage);
 	}
 
 	
-//	@PutMapping(value="/{id}")
-//	public MessagesDto updateMessage(@PathVariable("id") final long id, @RequestBody MessagesDto m) {
-//		Optional<MessagesDto> message = Optional.empty();
-//		if(message.isPresent()) {
-//			
-//			return messagesService.save(m);
-//
-//		} else {
-//			return null;
-//		}
-//	}
+	@PutMapping(value="/{id}")
+	public ResponseEntity<MessagesDto> updateMessage(@PathVariable("id") final long id, @RequestBody MessagesDto messageDto) {
+		 MessagesDto savedMessage = messagesService.save(messageDto.getRental_id(), messageDto.getUser_id(), messageDto.getMessage());
+		    return ResponseEntity.ok(savedMessage);
+	}
 	
 	@GetMapping(value="")
 	public Iterable<MessagesDto> getMessages() {
