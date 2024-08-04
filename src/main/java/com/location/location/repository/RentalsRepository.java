@@ -8,7 +8,7 @@ import com.location.location.DTO.RentalsDto;
 import com.location.location.model.Rentals;
 
 @Repository
-public interface RentalsRepository extends JpaRepository<Rentals, Long>{
+public interface RentalsRepository extends JpaRepository<Rentals, Long> {
 
 	void save(RentalsDto rental);
 

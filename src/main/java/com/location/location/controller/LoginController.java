@@ -1,4 +1,5 @@
 package com.location.location.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,50 +22,51 @@ import com.location.location.service.UsersService;
 @RequestMapping("/api/auth")
 public class LoginController {
 
-    @Autowired
-    private UsersService usersService;
+	@Autowired
+	private UsersService usersService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JWTService jwtService;
+	@Autowired
+	private JWTService jwtService;
 
-    @PostMapping(value="/register")
-    public ResponseEntity<UsersDto> saveUser(@RequestBody UsersDto u) {
-        UsersDto savedUser = usersService.save(u);
-        return ResponseEntity.ok(savedUser);
-    }
+	@PostMapping(value = "/register")
+	public ResponseEntity<UsersDto> saveUser(@RequestBody UsersDto u) {
+		UsersDto savedUser = usersService.save(u);
+		return ResponseEntity.ok(savedUser);
+	}
 
-    @PostMapping(value="/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+	@PostMapping(value = "/login")
+	public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginRequest) {
+		try {
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            UsersDto user = usersService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			UsersDto user = usersService.findByEmail(userDetails.getUsername())
+					.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            String token = jwtService.generateToken(userDetails, user.getId());
-            
-            LoginResponseDto response = new LoginResponseDto(user.getId(), user.getName(), user.getEmail(), user.getCreated_at(), user.getUpdated_at(), token);
+			String token = jwtService.generateToken(userDetails, user.getId());
 
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-        	System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
+			LoginResponseDto response = new LoginResponseDto(user.getId(), user.getName(), user.getEmail(),
+					user.getCreated_at(), user.getUpdated_at(), token);
 
-    @GetMapping(value="/me")
-    public ResponseEntity<LoginResponseDto> getCurrentUser(@RequestHeader("Authorization") String token) {
-        try {
-            LoginResponseDto currentUser = usersService.getCurrentUser(token);
-            return ResponseEntity.ok(currentUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+			return ResponseEntity.ok(response);
+		} catch (AuthenticationException e) {
+			System.out.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
+
+	@GetMapping(value = "/me")
+	public ResponseEntity<LoginResponseDto> getCurrentUser(@RequestHeader("Authorization") String token) {
+		try {
+			LoginResponseDto currentUser = usersService.getCurrentUser(token);
+			return ResponseEntity.ok(currentUser);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
 }

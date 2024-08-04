@@ -14,17 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsersDto {
-	
 
 	private long id;
-    private String name;
-    private String email;
-    private String password;
-    private String role;
-    private Date created_at;
-    private Date updated_at;
-    private String token;
-	
-		
-	    
+	private String name;
+	private String email;
+	private String password;
+	private String role;
+	private Date created_at;
+	private Date updated_at;
+	private String token;
+
 }

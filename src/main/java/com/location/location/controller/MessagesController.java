@@ -29,13 +29,6 @@ public class MessagesController {
 	    return ResponseEntity.ok(savedMessage);
 	}
 
-	
-	@PutMapping(value="/{id}")
-	public ResponseEntity<MessagesDto> updateMessage(@PathVariable("id") final long id, @RequestBody MessagesDto messageDto) {
-		 MessagesDto savedMessage = messagesService.save(messageDto.getRental_id(), messageDto.getUser_id(), messageDto.getMessage());
-		    return ResponseEntity.ok(savedMessage);
-	}
-	
 	@GetMapping(value="")
 	public Iterable<MessagesDto> getMessages() {
 		return this.messagesService.getAllMessages();
