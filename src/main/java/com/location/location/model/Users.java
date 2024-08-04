@@ -18,19 +18,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private long id;
-	  private String name;
-	   private String email;
-	   @CreationTimestamp
-	    private Date created_at;
-	    @UpdateTimestamp
-	    private Date updated_at;
-	    private String password;
-	    private String token;
-	    private String role;
+	private long id;
+	private String name;
+	private String email;
+	@CreationTimestamp
+	private Date created_at;
+	@UpdateTimestamp
+	private Date updated_at;
+	private String password;
+	private String token;
+	private String role;
 
-	    
 }

@@ -1,11 +1,13 @@
 package com.location.location.model;
 
-
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,27 +20,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
 public class Rentals {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	 private String name;
-     private int surface;
-     private int price;
-    private String picture;
-     private String description;
-     @CreationTimestamp
-     private Date created_at;
-     @UpdateTimestamp
-     private Date updated_at;
-     @ManyToOne
-     @JoinColumn(name = "owner_id", nullable = false)
-     private Users ownerId;
-	
+	private String name;
+	private int surface;
+	private int price;
+	private String picture;
+	private String description;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private Instant created_at;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private Instant updated_at;
+	@ManyToOne
+	@JoinColumn(name = "owner_id", nullable = false)
+	private Users ownerId;
+
 }

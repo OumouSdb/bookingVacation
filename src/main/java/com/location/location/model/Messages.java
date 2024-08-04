@@ -11,16 +11,16 @@ import lombok.Data;
 @Entity
 @Data
 public class Messages {
-		
-		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private long Id;
-	 	private String message;
-	 	@ManyToOne
-	    @JoinColumn(name = "rentals_id", nullable = false)
-	    private Rentals rentalId;
 
-	    @ManyToOne
-	    @JoinColumn(name = "users_id", nullable = false)
-	    private Users userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long Id;
+	private String message;
+	@ManyToOne
+	@JoinColumn(name = "rentals_id", nullable = false)
+	private Rentals rentalId;
+
+	@ManyToOne
+	@JoinColumn(name = "users_id", nullable = false)
+	private Users userId;
 }
